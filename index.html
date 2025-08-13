@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My IP Info</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>My IP Information</h1>
+            <p class="subtitle">See your public IP address and network details</p>
+        </header>
+
+        <main>
+            <div class="ip-display">
+                <div class="ip-address">
+                    <h2>Your Public IP Address</h2>
+                    <div class="address" id="ipv4">Loading IPv4...</div>
+                    <div class="address" id="ipv6">IPv6 not detected</div>
+                </div>
+
+                <div class="location-info">
+                    <h2>Location Information</h2>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="label">Country:</span>
+                            <span class="value" id="country">Loading...</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Region:</span>
+                            <span class="value" id="region">Loading...</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">City:</span>
+                            <span class="value" id="city">Loading...</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Postal Code:</span>
+                            <span class="value" id="postal">Loading...</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Coordinates:</span>
+                            <span class="value" id="coordinates">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="network-info">
+                    <h2>Network Information</h2>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="label">ISP:</span>
+                            <span class="value" id="isp">Loading...</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Organization:</span>
+                            <span class="value" id="org">Loading...</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">ASN:</span>
+                            <span class="value" id="asn">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="user-info">
+                    <h2>Browser Information</h2>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="label">User Agent:</span>
+                            <span class="value" id="user-agent">Loading...</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Browser:</span>
+                            <span class="value" id="browser">Loading...</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">OS:</span>
+                            <span class="value" id="os">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="privacy-section">
+                <h2>Privacy Check</h2>
+                <div class="privacy-status" id="privacy-status">
+                    <div class="status-icon"></div>
+                    <div class="status-text">Checking VPN/Proxy status...</div>
+                </div>
+                <button id="check-blacklist" class="btn">Check Blacklist Status</button>
+            </div>
+        </main>
+
+        <footer>
+            <p>© 2035 NonStopEren | Privacy Policy</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
