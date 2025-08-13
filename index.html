@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Security Toolkit</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #e63946;
+            --secondary-color: #f1faee;
+            --dark-color: #1d1e20;
+            --darker-color: #121212;
+            --accent-color: #ff2d4e;
+            --success-color: #2a9d8f;
+            --warning-color: #e9c46a;
+            --info-color: #457b9d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: var(--darker-color);
+            color: var(--secondary-color);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: rgba(255,255,255,0.7);
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .tool-selector {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tool-btn {
+            padding: 0.8rem 1.8rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            background-color: rgba(255,255,255,0.1);
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tool-btn:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        .tool-btn.active {
+            background-color: var(--primary-color);
+            box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3);
+        }
+
+        .tool-container {
+            background: linear-gradient(145deg, #1f2023, #1a1a1d);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .tool-section {
+            display: none;
+        }
+
+        .tool-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .section-title i {
+            color: var(--primary-color);
+        }
+
+        .input-group {
+            margin-bottom: 1.8rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 500;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .input-group input,
+        .input-group textarea,
+        .input-group select {
+            width: 100%;
+            padding: 1rem;
+            background-color: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            font-size: 1rem;
+            color: var(--secondary-color);
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.2);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.8rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.9rem 1.8rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
+        }
+
+        .btn-secondary {
+            background-color: rgba(255,255,255,0.1);
+            color: var(--secondary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        .result-container {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            background-color: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            display: none;
+        }
+
+        .result-container.active {
+            display: block;
+        }
+
+        .result-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .qr-code-container {
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+
+        .qr-code-img {
+            max-width: 300px;
+            margin: 0 auto;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            background: white;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-width: 200px;
+        }
+
+        .control-group label {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+        }
+
+        .password-strength {
+            height: 6px;
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s, background-color 0.3s;
+        }
+
+        .password-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .option-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .option-checkbox input {
+            width: auto;
+        }
+
+        .username-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+
+        .status-available {
+            color: var(--success-color);
+        }
+
+        .status-taken {
+            color: var(--primary-color);
+        }
+
+        .status-error {
+            color: var(--warning-color);
+        }
+
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .platform-btn {
+            padding: 0.8rem;
+            border-radius: 8px;
+            background-color: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .platform-btn:hover {
+            background-color: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        .platform-btn i {
+            font-size: 1.5rem;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 1rem 0;
+            color: var(--primary-color);
+        }
+
+        .error-message {
+            color: var(--primary-color);
+            margin-top: 1rem;
+            padding: 0.8rem;
+            background-color: rgba(230, 57, 70, 0.1);
+            border-radius: 6px;
+            border-left: 3px solid var(--primary-color);
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .tool-container {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--darker-color);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Nexus Security Toolkit</h1>
+            <p class="subtitle">Advanced tools for security and privacy in a modern red and black interface</p>
+        </header>
+
+        <div class="tool-selector">
+            <button class="tool-btn active" data-tool="qr">
+                <i class="fas fa-qrcode"></i> QR Generator
+            </button>
+            <button class="tool-btn" data-tool="password">
+                <i class="fas fa-key"></i> Password Generator
+            </button>
+            <button class="tool-btn" data-tool="username">
+                <i class="fas fa-user-check"></i> Username Checker
+            </button>
+        </div>
+
+        <div class="tool-container">
+            <!-- QR Code Generator -->
+            <div class="tool-section active" id="qr-section">
+                <h2 class="section-title"><i class="fas fa-qrcode"></i> QR Code Generator</h2>
+                
+                <div class="input-group">
+                    <label for="qr-content">Enter text or URL:</label>
+                    <textarea id="qr-content" placeholder="Enter any text, URL, or data to encode..."></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" id="generate-qr">
+                        <i class="fas fa-bolt"></i> Generate QR Code
+                    </button>
+                    <button class="btn btn-secondary" id="download-qr" disabled>
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                </div>
+
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="qr-size">Size (px)</label>
+                        <input type="range" id="qr-size" min="100" max="1000" value="300">
+                        <span id="qr-size-value">300</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="qr-margin">Margin</label>
+                        <select id="qr-margin">
+                            <option value="1">1</option>
+                            <option value="2" selected>2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="qr-format">Format</label>
+                        <select id="qr-format">
+                            <option value="png" selected>PNG</option>
+                            <option value="svg">SVG</option>
+                            <option value="webp">WebP</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="loading" id="qr-loading">
+                    <i class="fas fa-spinner fa-spin"></i> Generating QR Code...
+                </div>
+
+                <div class="error-message" id="qr-error"></div>
+
+                <div class="result-container" id="qr-result">
+                    <h3 class="result-title"><i class="fas fa-qrcode"></i> Your QR Code</h3>
+                    <div class="qr-code-container">
+                        <div class="qr-code-img" id="qr-code-display"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Password Generator -->
+            <div class="tool-section" id="password-section">
+                <h2 class="section-title"><i class="fas fa-key"></i> Advanced Password Generator</h2>
+                
+                <div class="input-group">
+                    <label for="password-length">Password Length: <span id="length-value">16</span></label>
+                    <input type="range" id="password-length" min="8" max="64" value="16">
+                    <div class="password-strength">
+                        <div class="strength-bar" id="strength-bar"></div>
+                    </div>
+                </div>
+
+                <div class="password-options">
+                    <div class="option-checkbox">
+                        <input type="checkbox" id="uppercase" checked>
+                        <label for="uppercase">Uppercase Letters (A-Z)</label>
+                    </div>
+                    <div class="option-checkbox">
+                        <input type="checkbox" id="lowercase" checked>
+                        <label for="lowercase">Lowercase Letters (a-z)</label>
+                    </div>
+                    <div class="option-checkbox">
+                        <input type="checkbox" id="numbers" checked>
+                        <label for="numbers">Numbers (0-9)</label>
+                    </div>
+                    <div class="option-checkbox">
+                        <input type="checkbox" id="symbols" checked>
+                        <label for="symbols">Symbols (!@#$%^&*)</label>
+                    </div>
+                    <div class="option-checkbox">
+                        <input type="checkbox" id="avoid-similar">
+                        <label for="avoid-similar">Avoid Similar Characters (1lI0O)</label>
+                    </div>
+                    <div class="option-checkbox">
+                        <input type="checkbox" id="exclude-duplicates">
+                        <label for="exclude-duplicates">Exclude Duplicate Characters</label>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" id="generate-password">
+                        <i class="fas fa-sync-alt"></i> Generate Password
+                    </button>
+                    <button class="btn btn-secondary" id="copy-password" disabled>
+                        <i class="fas fa-copy"></i> Copy to Clipboard
+                    </button>
+                </div>
+
+                <div class="result-container" id="password-result">
+                    <h3 class="result-title"><i class="fas fa-key"></i> Generated Password</h3>
+                    <div class="input-group">
+                        <input type="text" id="generated-password" readonly>
+                    </div>
+                    <div class="input-group">
+                        <label>Password Strength:</label>
+                        <div id="password-strength-text">Very Strong</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Entropy Bits:</label>
+                        <div id="password-entropy">128</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Username Checker -->
+            <div class="tool-section" id="username-section">
+                <h2 class="section-title"><i class="fas fa-user-check"></i> Username Availability Checker</h2>
+                
+                <div class="input-group">
+                    <label for="username-input">Enter a username to check:</label>
+                    <input type="text" id="username-input" placeholder="e.g., cooluser123">
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" id="check-username">
+                        <i class="fas fa-search"></i> Check Availability
+                    </button>
+                </div>
+
+                <div class="platform-grid">
+                    <div class="platform-btn" data-platform="twitter">
+                        <i class="fab fa-twitter"></i>
+                        <span>Twitter</span>
+                    </div>
+                    <div class="platform-btn" data-platform="instagram">
+                        <i class="fab fa-instagram"></i>
+                        <span>Instagram</span>
+                    </div>
+                    <div class="platform-btn" data-platform="github">
+                        <i class="fab fa-github"></i>
+                        <span>GitHub</span>
+                    </div>
+                    <div class="platform-btn" data-platform="reddit">
+                        <i class="fab fa-reddit"></i>
+                        <span>Reddit</span>
+                    </div>
+                    <div class="platform-btn" data-platform="spotify">
+                        <i class="fab fa-spotify"></i>
+                        <span>Spotify</span>
+                    </div>
+                    <div class="platform-btn" data-platform="youtube">
+                        <i class="fab fa-youtube"></i>
+                        <span>YouTube</span>
+                    </div>
+                </div>
+
+                <div class="loading" id="username-loading">
+                    <i class="fas fa-spinner fa-spin"></i> Checking username availability...
+                </div>
+
+                <div class="error-message" id="username-error"></div>
+
+                <div class="result-container" id="username-result">
+                    <h3 class="result-title"><i class="fas fa-chart-bar"></i> Availability Results</h3>
+                    <div id="username-results-container">
+                        <!-- Results will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2023 Nexus Security Toolkit | All Rights Reserved</p>
+            <p>This tool is for educational purposes only</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tool selector functionality
+            const toolBtns = document.querySelectorAll('.tool-btn');
+            const toolSections = document.querySelectorAll('.tool-section');
+            
+            toolBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tool = this.getAttribute('data-tool');
+                    
+                    // Update active button
+                    toolBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show corresponding section
+                    toolSections.forEach(section => {
+                        section.classList.remove('active');
+                        if (section.id === `${tool}-section`) {
+                            section.classList.add('active');
+                        }
+                    });
+                });
+            });
+
+            // QR Code Generator
+            const qrContent = document.getElementById('qr-content');
+            const generateQrBtn = document.getElementById('generate-qr');
+            const downloadQrBtn = document.getElementById('download-qr');
+            const qrSize = document.getElementById('qr-size');
+            const qrSizeValue = document.getElementById('qr-size-value');
+            const qrMargin = document.getElementById('qr-margin');
+            const qrFormat = document.getElementById('qr-format');
+            const qrLoading = document.getElementById('qr-loading');
+            const qrError = document.getElementById('qr-error');
+            const qrResult = document.getElementById('qr-result');
+            const qrDisplay = document.getElementById('qr-code-display');
+            
+            let currentQrUrl = null;
+            
+            qrSize.addEventListener('input', function() {
+                qrSizeValue.textContent = this.value;
+            });
+            
+            generateQrBtn.addEventListener('click', generateQRCode);
+            downloadQrBtn.addEventListener('click', downloadQRCode);
+            
+            function generateQRCode() {
+                const content = qrContent.value.trim();
+                const size = qrSize.value;
+                const margin = qrMargin.value;
+                const format = qrFormat.value;
+                
+                if (!content) {
+                    showError(qrError, "Please enter some text or URL to generate QR code");
+                    return;
+                }
+                
+                qrLoading.style.display = 'block';
+                qrError.style.display = 'none';
+                qrResult.classList.remove('active');
+                downloadQrBtn.disabled = true;
+                
+                // Using QuickChart API
+                const encodedContent = encodeURIComponent(content);
+                const apiUrl = `https://quickchart.io/qr?text=${encodedContent}&size=${size}&margin=${margin}&format=${format}`;
+                
+                fetch(apiUrl)
+                    .then(response => {
+                        if (!response.ok) throw new Error('Failed to generate QR code');
+                        return response.blob();
+                    })
+                    .then(blob => {
+                        const url = URL.createObjectURL(blob);
+                        currentQrUrl = url;
+                        
+                        if (format === 'svg') {
+                            qrDisplay.innerHTML = `<object data="${url}" type="image/svg+xml"></object>`;
+                        } else {
+                            qrDisplay.innerHTML = `<img src="${url}" alt="Generated QR Code">`;
+                        }
+                        
+                        qrResult.classList.add('active');
+                        downloadQrBtn.disabled = false;
+                    })
+                    .catch(error => {
+                        showError(qrError, "Error generating QR code. Please try again later.");
+                        console.error(error);
+                    })
+                    .finally(() => {
+                        qrLoading.style.display = 'none';
+                    });
+            }
+            
+            function downloadQRCode() {
+                if (!currentQrUrl) return;
+                
+                const a = document.createElement('a');
+                a.href = currentQrUrl;
+                a.download = `qrcode.${qrFormat.value}`;
+                a.click();
+            }
+            
+            // Password Generator
+            const passwordLength = document.getElementById('password-length');
+            const lengthValue = document.getElementById('length-value');
+            const uppercase = document.getElementById('uppercase');
+            const lowercase = document.getElementById('lowercase');
+            const numbers = document.getElementById('numbers');
+            const symbols = document.getElementById('symbols');
+            const avoidSimilar = document.getElementById('avoid-similar');
+            const excludeDuplicates = document.getElementById('exclude-duplicates');
+            const generatePasswordBtn = document.getElementById('generate-password');
+            const copyPasswordBtn = document.getElementById('copy-password');
+            const generatedPassword = document.getElementById('generated-password');
+            const passwordResult = document.getElementById('password-result');
+            const strengthBar = document.getElementById('strength-bar');
+            const strengthText = document.getElementById('password-strength-text');
+            const entropyText = document.getElementById('password-entropy');
+            
+            passwordLength.addEventListener('input', function() {
+                lengthValue.textContent = this.value;
+                if (passwordResult.classList.contains('active')) {
+                    generatePassword();
+                }
+            });
+            
+            [uppercase, lowercase, numbers, symbols, avoidSimilar, excludeDuplicates].forEach(option => {
+                option.addEventListener('change', function() {
+                    if (passwordResult.classList.contains('active')) {
+                        generatePassword();
+                    }
+                });
+            });
+            
+            generatePasswordBtn.addEventListener('click', function() {
+                generatePassword();
+                passwordResult.classList.add('active');
+            });
+            
+            copyPasswordBtn.addEventListener('click', function() {
+                if (!generatedPassword.value) return;
+                
+                navigator.clipboard.writeText(generatedPassword.value)
+                    .then(() => {
+                        const originalText = copyPasswordBtn.innerHTML;
+                        copyPasswordBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                        setTimeout(() => {
+                            copyPasswordBtn.innerHTML = originalText;
+                        }, 2000);
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy password: ', err);
+                    });
+            });
+            
+            function generatePassword() {
+                const length = parseInt(passwordLength.value);
+                const hasUpper = uppercase.checked;
+                const hasLower = lowercase.checked;
+                const hasNumber = numbers.checked;
+                const hasSymbol = symbols.checked;
+                const noSimilar = avoidSimilar.checked;
+                const noDuplicates = excludeDuplicates.checked;
+                
+                if (!hasUpper && !hasLower && !hasNumber && !hasSymbol) {
+                    generatedPassword.value = "Please select at least one character type";
+                    return;
+                }
+                
+                let charset = '';
+                if (hasUpper) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                if (hasLower) charset += 'abcdefghijklmnopqrstuvwxyz';
+                if (hasNumber) charset += '0123456789';
+                if (hasSymbol) charset += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+                
+                if (noSimilar) {
+                    charset = charset.replace(/[1lI0O]/g, '');
+                }
+                
+                let password = '';
+                for (let i = 0; i < length; i++) {
+                    const randomIndex = Math.floor(Math.random() * charset.length);
+                    const char = charset[randomIndex];
+                    
+                    if (noDuplicates && password.includes(char)) {
+                        i--; // Try again
+                        continue;
+                    }
+                    
+                    password += char;
+                }
+                
+                generatedPassword.value = password;
+                copyPasswordBtn.disabled = false;
+                updatePasswordStrength(password);
+            }
+            
+            function updatePasswordStrength(password) {
+                // Calculate entropy bits
+                let charsetSize = 0;
+                if (uppercase.checked) charsetSize += 26;
+                if (lowercase.checked) charsetSize += 26;
+                if (numbers.checked) charsetSize += 10;
+                if (symbols.checked) charsetSize += symbols.checked ? 20 : 0;
+                
+                const entropy = Math.log2(Math.pow(charsetSize, password.length));
+                entropyText.textContent = Math.round(entropy);
+                
+                // Visual strength indicator
+                let strength = 0;
+                let strengthClass = '';
+                
+                if (entropy < 28) {
+                    strength = 25;
+                    strengthText.textContent = 'Very Weak';
+                    strengthClass = 'very-weak';
+                } else if (entropy < 36) {
+                    strength = 50;
+                    strengthText.textContent = 'Weak';
+                    strengthClass = 'weak';
+                } else if (entropy < 60) {
+                    strength = 75;
+                    strengthText.textContent = 'Good';
+                    strengthClass = 'good';
+                } else if (entropy < 100) {
+                    strength = 90;
+                    strengthText.textContent = 'Strong';
+                    strengthClass = 'strong';
+                } else {
+                    strength = 100;
+                    strengthText.textContent = 'Very Strong';
+                    strengthClass = 'very-strong';
+                }
+                
+                strengthBar.style.width = `${strength}%`;
+                strengthBar.className = 'strength-bar ' + strengthClass;
+            }
+            
+            // Username Checker
+            const usernameInput = document.getElementById('username-input');
+            const checkUsernameBtn = document.getElementById('check-username');
+            const usernameLoading = document.getElementById('username-loading');
+            const usernameError = document.getElementById('username-error');
+            const usernameResult = document.getElementById('username-result');
+            const usernameResultsContainer = document.getElementById('username-results-container');
+            const platformBtns = document.querySelectorAll('.platform-btn');
+            
+            checkUsernameBtn.addEventListener('click', checkUsernameAvailability);
+            
+            platformBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const platform = this.getAttribute('data-platform');
+                    checkSinglePlatform(platform);
+                });
+            });
+            
+            function checkUsernameAvailability() {
+                const username = usernameInput.value.trim();
+                
+                if (!username) {
+                    showError(usernameError, "Please enter a username to check");
+                    return;
+                }
+                
+                usernameLoading.style.display = 'block';
+                usernameError.style.display = 'none';
+                usernameResult.classList.remove('active');
+                
+                // In a real implementation, you would make API calls to check each platform
+                // This is a simulation with random results
+                setTimeout(() => {
+                    usernameResultsContainer.innerHTML = '';
+                    
+                    const platforms = [
+                        { name: 'Twitter', icon: 'fab fa-twitter', available: Math.random() > 0.5 },
+                        { name: 'Instagram', icon: 'fab fa-instagram', available: Math.random() > 0.5 },
+                        { name: 'GitHub', icon: 'fab fa-github', available: Math.random() > 0.7 },
+                        { name: 'Reddit', icon: 'fab fa-reddit', available: Math.random() > 0.6 },
+                        { name: 'Spotify', icon: 'fab fa-spotify', available: Math.random() > 0.5 },
+                        { name: 'YouTube', icon: 'fab fa-youtube', available: Math.random() > 0.4 }
+                    ];
+                    
+                    platforms.forEach(platform => {
+                        const platformEl = document.createElement('div');
+                        platformEl.className = 'username-status';
+                        platformEl.innerHTML = `
+                            <i class="${platform.icon}"></i>
+                            <span>${platform.name}:</span>
+                            <span class="${platform.available ? 'status-available' : 'status-taken'}">
+                                ${platform.available ? 'Available' : 'Taken'}
+                            </span>
+                        `;
+                        usernameResultsContainer.appendChild(platformEl);
+                    });
+                    
+                    usernameResult.classList.add('active');
+                    usernameLoading.style.display = 'none';
+                }, 1500);
+            }
+            
+            function checkSinglePlatform(platform) {
+                const username = usernameInput.value.trim();
+                
+                if (!username) {
+                    showError(usernameError, "Please enter a username to check");
+                    return;
+                }
+                
+                usernameLoading.style.display = 'block';
+                usernameError.style.display = 'none';
+                
+                // Simulate API call
+                setTimeout(() => {
+                    const available = Math.random() > 0.5;
+                    alert(`${username} is ${available ? 'available' : 'not available'} on ${platform}`);
+                    usernameLoading.style.display = 'none';
+                }, 800);
+            }
+            
+            // Helper functions
+            function showError(element, message) {
+                element.textContent = message;
+                element.style.display = 'block';
+            }
+            
+            // Generate initial password
+            generatePassword();
+            passwordResult.classList.add('active');
+        });
+    </script>
+</body>
+</html>
